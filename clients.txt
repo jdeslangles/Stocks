@@ -1,0 +1,6 @@
+Julien, 10000
+Barney, 5000
+Francis, 30000
+Oliver, 90000
+Sophia, 20000
+Lilly, 30000
