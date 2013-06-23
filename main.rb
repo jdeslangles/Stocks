@@ -48,6 +48,9 @@ response = menu
 
 while response != 'q'
   case response
+
+# "Existing client account" menu - can list accounts and portfolios
+
     when 'e'
       puts `clear`
       puts "\nExisting Client Accounts:"
@@ -65,23 +68,23 @@ while response != 'q'
       puts "--> Please press Enter to come back to the main menu"
       gets
 
-    # when 'n'
-    #   puts "***********************************"
-    #   puts "\nNew Client Account:"
-    #   puts "***********************************"
-    #   puts "\nPlease enter your name:"
-    #   name = gets.chomp.downcase.to_sym
+# "Create new account" menu
 
-    #     puts happytails.available.keys.join(", ")
-    #     puts
-    #     puts "Please enter the name of the pet you would like to adopt:"
-    #     adoption_choice = gets.chomp.downcase.to_sym
-    #     happytails.adopt (name), (adoption_choice)
-    #     puts
-    #     puts "Thank you for making #{adoption_choice} a new member of your family!"
-    #     puts
-    #     puts "Please press Enter to come back to the main menu"
-    #     gets
+    when 'n'
+      puts `clear`
+      puts "\nNew Client Account:"
+      puts "***********************************"
+      puts "\nPlease enter the Client's name:"
+      name = gets.chomp.downcase
+      puts "\nWhat amount will the Client deposit into his new account?"
+      amount = gets.chomp.to_f
+      puts "=> You successfully opened #{name}'s new account. The current balance is $#{amount}."
+      clients << Client.new(name, amount)
+      puts
+      puts "Please press Enter to come back to the main menu"
+      gets
+
+# "Personal finance/client login" menu
 
     when 'c'
       puts `clear`
@@ -100,16 +103,25 @@ while response != 'q'
       option = gets.chomp.downcase
 
       case option
+
+        # Add/Withdraw funds
+
         when "f"
           puts "\nWhat amount will you be transfering today?"
           transfered_funds = gets.chomp.to_f
           clients[client_selection].transfering_funds(transfered_funds)
+
+        # Create portfolio
+
         when "p"
           puts "\nWhat will you call your portfolio?"
           puts "***********************************"
           portfolio_name = gets.chomp
           clients[client_selection].portfolios << Portfolio.new(portfolio_name)
           puts "=> Your new #{portfolio_name} portfolio has been added."
+
+        # Trade menu
+
         when "t"
           puts `clear`
           puts "\n#{clients[client_selection].name}'s $tock$ Trading Platform"
@@ -181,42 +193,17 @@ while response != 'q'
               clients[client_selection].available_funds += (sell_number * value)
               clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number -= sell_number
               puts "\n=> You successfully sold #{sell_number} #{name} shares at $#{value} per share. You now hold a total of #{clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number} #{name} shares, and $#{(value*sell_number)} have been credited to your acount."
-
-            else
+              else
               puts "=> You do not own this stock."
+              end
             end
 
-
-
-
-
-
-
-
-          end
-
         end
-
-
 
       puts
       puts "--> Please press Enter to come back to the main menu"
       gets
 
-    #     puts happytails.clients.keys.join(". ")
-    #   puts "*******************************************************************"
-    #     puts "\nWhich one is you? Please enter your name:"
-    #     name = gets.chomp.downcase.to_sym
-    #     puts
-    #     puts happytails.clients[name].animals.keys.join(". ")
-    #     puts "Please enter the name of your pet:"
-    #     give_up = gets.chomp.downcase.to_sym
-    #     happytails.taking_in (name), (give_up)
-    #     puts
-    #     puts "Thank you. We will make sure #{give_up} finds a good home!"
-    #     puts
-    #     puts "Please press Enter to come back to the main menu"
-    #     gets
   end
 response = menu
 
