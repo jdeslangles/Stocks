@@ -90,7 +90,7 @@ while response != 'q'
       clients.each_index do |index|
         puts "Account (#{index}) #{clients[index].to_s_login}"
       end
-      puts "--> To access your account, select your account number:"
+      puts "\n--> To access your account, select your account number:"
       client_selection = gets.chomp.to_i
       puts "\nHi #{clients[client_selection].name}, what would you like to do?"
       puts "***********************************"
@@ -106,12 +106,94 @@ while response != 'q'
           clients[client_selection].transfering_funds(transfered_funds)
         when "p"
           puts "\nWhat will you call your portfolio?"
+          puts "***********************************"
           portfolio_name = gets.chomp
           clients[client_selection].portfolios << Portfolio.new(portfolio_name)
-          puts "Your new #{portfolio_name} portfolio has been added."
+          puts "=> Your new #{portfolio_name} portfolio has been added."
         when "t"
           puts `clear`
-          puts "What would you like to do?"
+          puts "\n#{clients[client_selection].name}'s $tock$ Trading Platform"
+          puts "***********************************"
+          puts  "\n#{clients[client_selection].name}'s exisiting portfolios: "
+          clients[client_selection].portfolios_listing
+          puts "\nPlease select your portfolio before proceeding."
+          portfolio_selection = gets.chomp.to_i
+          puts "\nWhat would you like to do?"
+          puts "--> Get the latest (Q)uotes, press Q + Enter"
+          puts "--> (B)uy stocks, press B + Enter"
+          puts "--> (S)ell stocks, press S + Enter"
+          trade_choice = gets.chomp.downcase
+
+          case trade_choice
+          when "q"
+            puts "\nWhich share price are you interested in?"
+            puts "***********************************"
+            puts "Please enter the company's ticker (e.g. AAPL) + Enter:"
+            ticker = gets.chomp.upcase.to_s
+            value = YahooFinance::get_standard_quotes( ticker )[ ticker ].lastTrade
+            name = YahooFinance::get_standard_quotes( ticker )[ ticker ].name
+            puts "\n=> #{name} is currently trading at $#{value} per share."
+            puts
+            puts
+            puts
+            puts "###################################################################"
+            puts "### Please be advised that displayed quotes are 15 minutes old !###"
+            puts "###################################################################"
+          when "b"
+            puts "\nWhich share are you interested in buying?"
+            puts "***********************************"
+            puts "Please enter the company's ticker (e.g. AAPL) + Enter:"
+            ticker = gets.chomp.upcase.to_s
+            value = YahooFinance::get_standard_quotes( ticker )[ ticker ].lastTrade
+            name = YahooFinance::get_standard_quotes( ticker )[ ticker ].name
+            puts "\n=> #{name} is currently trading at $#{value} per share."
+            puts
+            puts "How many #{name} shares would you like to buy?"
+            puts "***********************************"
+            buy_number = gets.chomp.to_i
+            if ( buy_number*value) <= clients[client_selection].available_funds
+              if clients[client_selection].portfolios[portfolio_selection].stocks.include?(ticker)
+                clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number += buy_number
+                clients[client_selection].available_funds -= (value * buy_number)
+                puts "=> You successfully purchased #{buy_number} #{name} shares at $#{value} per share. You now hold a total of #{clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number} #{name} shares, and $#{(value*buy_number)} have been debited from your acount."
+              else
+                clients[client_selection].portfolios[portfolio_selection].stocks[ticker] = Stock.new(ticker, buy_number)
+                clients[client_selection].available_funds -= (value * buy_number)
+                puts "\n=> You successfully purchased #{buy_number} #{name} shares at $#{value} per share. You now hold a total of #{clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number} #{name} shares, and $#{(value*buy_number)} have been debited from your acount."
+              end
+            else
+              puts "\n=>Sorry - it would seem you do not currently have sufficient funds for this transaction. Please add funds to your account before proceeding."
+            end
+
+          when "s"
+            puts "\nWhich share are you interested in selling?"
+            puts "***********************************"
+            puts "Please enter the company's ticker (e.g. AAPL) + Enter:"
+            ticker = gets.chomp.upcase.to_s
+            value = YahooFinance::get_standard_quotes( ticker )[ ticker ].lastTrade
+            name = YahooFinance::get_standard_quotes( ticker )[ ticker ].name
+            puts "\n=> #{name} is currently trading at $#{value} per share."
+              if clients[client_selection].portfolios[portfolio_selection].stocks.include?(ticker)
+              puts "=> You currently hold #{clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number} #{clients[client_selection].portfolios[portfolio_selection].stocks[ticker].stock_name} shares."
+              puts "How many share would you like to sell?"
+              puts "***********************************"
+              sell_number = gets.chomp.to_i
+              clients[client_selection].available_funds += (sell_number * value)
+              clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number -= sell_number
+              puts "\n=> You successfully sold #{sell_number} #{name} shares at $#{value} per share. You now hold a total of #{clients[client_selection].portfolios[portfolio_selection].stocks[ticker].number} #{name} shares, and $#{(value*sell_number)} have been credited to your acount."
+
+            else
+              puts "=> You do not own this stock."
+            end
+
+
+
+
+
+
+
+
+          end
 
         end
 

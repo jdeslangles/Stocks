@@ -8,39 +8,35 @@ class Client
     @portfolios = []
   end
 
-
+  def to_s_login
+    "#{name}"
+  end
   def to_s
     "#{name} => current balance of $#{available_funds}; #{portfolios.size} portfolios"
   end
 
-  def to_s_login
-    "#{name}"
-  end
-
   def transfering_funds(transfered_funds)
     @available_funds += transfered_funds
-    puts "You now have a total of $#{available_funds}."
+    puts "=> You now have a total of $#{available_funds}."
   end
 
-  def create_portfolio
-    #do stuff
+  # def create_portfolio
+  #   #do stuff
+  # end
+
+  def portfolios_listing
+    portfolios.each_index do |index|
+    puts "Portfolio (#{index}) : #{portfolios.to_s}"
+    end
   end
 
-  def list_portfolios
-    portfolios.each.keys.join(", ") do |key, value|
-    puts "#{key}: #{value}"
-  end
+#   def buy_stock
+#     #do stuff
+#   end
 
-
-  def buy_stock
-    #do stuff
-  end
-
-  def sell_stock
-    #do stuff
-  end
-end
-
-
+#   def sell_stock
+#     #do stuff
+#   end
+# end
 
 end

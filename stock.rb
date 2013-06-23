@@ -24,6 +24,10 @@ require 'yahoofinance'
     #   f.close
     # end
 
+    def value
+        value = @number * @stock_price
+    end
+
     def to_s
       "#{ticker} --->#{number} #{stock_name} shares; total current value estimated at $#{(stock_price*number).round(4)}"
     end

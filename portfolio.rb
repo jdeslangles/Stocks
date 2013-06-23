@@ -10,7 +10,14 @@ class Portfolio
 
 
   def to_s
-    "The #{name} portfolio currently contains #{stocks.size} shares and has an estimated value of $#{value}."
+    "The #{name} portfolio currently contains shares in #{stocks.size} company(ies) and has an estimated value of $#{portfolio_value}."
+  end
+
+  def portfolio_value
+    initial_value = 0
+    stocks.each_value do |stock|
+      initial_value += stock.value
+    end
   end
 
   # f = File.new('stock-value.txt', 'a+')
